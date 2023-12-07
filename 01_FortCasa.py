@@ -89,7 +89,7 @@ with aba2:
         x='Fase', 
         y='Quantidade', 
         color_discrete_sequence=[px.colors.qualitative.Vivid[5]],
-        text_auto = True,
+        text = 'Quantidade',
         title='Contagem de Processos por Fases'
     )
     st.plotly_chart(grafico_qtd_fase, use_container_width=True)
@@ -117,7 +117,7 @@ with aba2:
         x='Empreendimento', 
         y='Quantidade', 
         color_discrete_sequence=[px.colors.qualitative.Vivid[5]],
-        text_auto = True,
+        text = 'Quantidade',
         title='Contagem de Processos por Loteamento'
     )
     st.plotly_chart(grafico_qtd_empreendimento, use_container_width=True)
@@ -145,7 +145,7 @@ with aba2:
         x='Nome/Razão Social', 
         y='Quantidade', 
         color_discrete_sequence=[px.colors.qualitative.Vivid[5]],
-        text_auto = True,
+        text = 'Quantidade',
         title='Contagem de Processos por Empresa'
     )
     st.plotly_chart(grafico_qtd_contagem_empresa, use_container_width=True)
