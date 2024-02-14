@@ -54,8 +54,8 @@ with aba1:
     qtd_processos = df_fortcasa_filtrado['Número do Processo'].count()
     df_fortcasa_filtrado['Valor Causa'] = df_fortcasa_filtrado['Valor Causa'].astype(str).str.replace(',', '.', regex=False).astype(float)
     valor_causa = df_fortcasa_filtrado['Valor Causa'].sum()
-    contagem_demandado = df_fortcasa_filtrado['Status Processual'].value_counts().get('DEMANDADO', 0)
-    contagem_demandante = df_fortcasa_filtrado['Status Processual'].value_counts().get('DEMANDANTE', 0)
+    contagem_polo_passivo  = df_fortcasa_filtrado['Status Processual'].value_counts().get('POLO PASSIVO', 0)
+    contagem_polo_ativo = df_fortcasa_filtrado['Status Processual'].value_counts().get('POLO ATIVO', 0)
     qtd_loteamento = len(df_fortcasa_filtrado['Empreendimento'].unique())
     qtd_empresas = len(df_fortcasa_filtrado['Nome/Razão Social'].unique())
 
@@ -66,8 +66,8 @@ with aba1:
         st.metric('Total Valor de Causa', format_number(valor_causa, 'R$'))
         st.metric('Quantidade de Processos', qtd_processos)
     with coluna2:
-        st.metric('Polo Passivo', contagem_demandado)
-        st.metric('Polo Ativo', contagem_demandante)
+        st.metric('Polo Passivo', contagem_polo_passivo )
+        st.metric('Polo Ativo', contagem_polo_ativo)
     with coluna3:
         st.metric('Quantidade de empresas', qtd_empresas)
         st.metric('Quantidade de Loteamentos', qtd_loteamento)
@@ -89,7 +89,7 @@ with aba2:
         x='Fase', 
         y='Quantidade', 
         color_discrete_sequence=[px.colors.qualitative.Vivid[5]],
-        text = 'Quantidade',
+        text='Quantidade',
         title='Contagem de Processos por Fases'
     )
     st.plotly_chart(grafico_qtd_fase, use_container_width=True)
