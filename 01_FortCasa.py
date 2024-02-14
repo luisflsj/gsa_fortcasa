@@ -18,7 +18,7 @@ with st.sidebar:
     empreendimento = df_fortcasa['Empreendimento'].unique().tolist()
     filtro_empreendimento = st.multiselect('Empreendimento', empreendimento)
 
-    polo = df_fortcasa['Autor/Réu'].unique().tolist()
+    polo = df_fortcasa['Status Processual'].unique().tolist()
     filtro_polo = st.multiselect('Polo', polo)
 
     comarca = df_fortcasa['Comarca'].unique().tolist()
@@ -36,7 +36,7 @@ with st.sidebar:
         df_fortcasa_filtrado = df_fortcasa_filtrado[df_fortcasa_filtrado['Empreendimento'].isin(filtro_empreendimento)]
 
     if filtro_polo:
-        df_fortcasa_filtrado = df_fortcasa_filtrado[df_fortcasa_filtrado['Autor/Réu'].isin(filtro_polo)]
+        df_fortcasa_filtrado = df_fortcasa_filtrado[df_fortcasa_filtrado['Status Processual'].isin(filtro_polo)]
 
     if filtro_comarca:
         df_fortcasa_filtrado = df_fortcasa_filtrado[df_fortcasa_filtrado['Comarca'].isin(filtro_comarca)]
@@ -54,8 +54,8 @@ with aba1:
     qtd_processos = df_fortcasa_filtrado['Número do Processo'].count()
     df_fortcasa_filtrado['Valor Causa'] = df_fortcasa_filtrado['Valor Causa'].astype(str).str.replace(',', '.', regex=False).astype(float)
     valor_causa = df_fortcasa_filtrado['Valor Causa'].sum()
-    contagem_demandado = df_fortcasa_filtrado['Autor/Réu'].value_counts().get('DEMANDADO', 0)
-    contagem_demandante = df_fortcasa_filtrado['Autor/Réu'].value_counts().get('DEMANDANTE', 0)
+    contagem_demandado = df_fortcasa_filtrado['Status Processual'].value_counts().get('DEMANDADO', 0)
+    contagem_demandante = df_fortcasa_filtrado['Status Processual'].value_counts().get('DEMANDANTE', 0)
     qtd_loteamento = len(df_fortcasa_filtrado['Empreendimento'].unique())
     qtd_empresas = len(df_fortcasa_filtrado['Nome/Razão Social'].unique())
 
