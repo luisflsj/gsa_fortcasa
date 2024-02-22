@@ -52,8 +52,11 @@ aba1, aba2 = st.tabs(['Quadro Geral', 'Análises e Gráficos'])
 
 with aba1:
     qtd_processos = df_fortcasa_filtrado['Número do Processo'].count()
-    df_fortcasa_filtrado['Valor Causa'] = df_fortcasa_filtrado['Valor Causa'].astype(str).str.replace(',', '.', regex=False).astype(float)
-    valor_causa = df_fortcasa_filtrado['Valor Causa'].sum()
+    df_fortcasa_filtrado['Valor da Causa'] = df_fortcasa_filtrado['Valor da Causa'].astype(str).str.replace(',', '.', regex=False).astype(float)
+    df_fortcasa_filtrado['Valor do Acordo'] = df_fortcasa_filtrado['Valor do Acordo'].astype(str).str.replace(',', '.', regex=False).astype(float)
+    valor_causa = df_fortcasa_filtrado['Valor da Causa'].sum()
+    valor_cump_sentenca = df_fortcasa_filtrado['Valor de Cumprimento de Sentença'].sum()
+    valor_acordo = df_fortcasa_filtrado['Valor do Acordo'].sum()
     contagem_polo_passivo  = df_fortcasa_filtrado['Status Processual'].value_counts().get('POLO PASSIVO', 0)
     contagem_polo_ativo = df_fortcasa_filtrado['Status Processual'].value_counts().get('POLO ATIVO', 0)
     qtd_loteamento = len(df_fortcasa_filtrado['Empreendimento'].unique())
@@ -64,12 +67,15 @@ with aba1:
     coluna1, coluna2, coluna3 = st.columns(3)
     with coluna1:
         st.metric('Total Valor de Causa', format_number(valor_causa, 'R$'))
-        st.metric('Quantidade de Processos', qtd_processos)
+        st.metric('Total Valor de Cumprimento de Sentença', format_number(valor_cump_sentenca, 'R$'))
+        st.metric('Total Valor do Acordo', format_number(valor_acordo, 'R$'))
+        
     with coluna2:
+        st.metric('Quantidade de Processos', qtd_processos)
         st.metric('Polo Passivo', contagem_polo_passivo )
         st.metric('Polo Ativo', contagem_polo_ativo)
     with coluna3:
-        st.metric('Quantidade de empresas', qtd_empresas)
+        st.metric('Quantidade de Empresas', qtd_empresas)
         st.metric('Quantidade de Loteamentos', qtd_loteamento)
 
     st.markdown('---')
@@ -86,24 +92,25 @@ with aba2:
 
     grafico_qtd_fase = px.bar(
         contagem_fases, 
-        x='Fase', 
-        y='Quantidade', 
+        y='Fase', 
+        x='Quantidade', 
         color_discrete_sequence=[px.colors.qualitative.Vivid[5]],
         text='Quantidade',
+        orientation='h',
         title='Contagem de Processos por Fases'
     )
     st.plotly_chart(grafico_qtd_fase, use_container_width=True)
 
-    df_vlr_fases = df_fortcasa_filtrado.groupby('Fase')['Valor Causa'].sum().reset_index()
-    df_vlr_fases = df_vlr_fases.sort_values(by = 'Valor Causa', ascending=False)
-    df_vlr_fases['Valor Causa Formatado'] = df_vlr_fases['Valor Causa'].apply(format_number)
+    df_vlr_fases = df_fortcasa_filtrado.groupby('Fase')['Valor da Causa'].sum().reset_index()
+    df_vlr_fases = df_vlr_fases.sort_values(by = 'Valor da Causa', ascending=False)
+    df_vlr_fases['Valor da Causa Formatado'] = df_vlr_fases['Valor da Causa'].apply(format_number)
 
     grafico_vlr_fase = px.bar(
         df_vlr_fases, 
         x='Fase', 
-        y='Valor Causa', 
+        y='Valor da Causa', 
         color_discrete_sequence=[px.colors.qualitative.Vivid[5]],
-        text = 'Valor Causa Formatado',
+        text = 'Valor da Causa Formatado',
         title='Valor de Causa de Processos por Fases'
     )
     st.plotly_chart(grafico_vlr_fase, use_container_width=True)
@@ -122,16 +129,16 @@ with aba2:
     )
     st.plotly_chart(grafico_qtd_empreendimento, use_container_width=True)
 
-    df_vlr_lote = df_fortcasa_filtrado.groupby('Empreendimento')['Valor Causa'].sum().reset_index()
-    df_vlr_lote = df_vlr_lote.sort_values(by = 'Valor Causa', ascending=False)
-    df_vlr_lote['Valor Causa Formatado'] = df_vlr_lote['Valor Causa'].apply(format_number)
+    df_vlr_lote = df_fortcasa_filtrado.groupby('Empreendimento')['Valor da Causa'].sum().reset_index()
+    df_vlr_lote = df_vlr_lote.sort_values(by = 'Valor da Causa', ascending=False)
+    df_vlr_lote['Valor da Causa Formatado'] = df_vlr_lote['Valor da Causa'].apply(format_number)
 
     grafico_vlr_lote = px.bar(
         df_vlr_lote.head(10), 
         x='Empreendimento', 
-        y='Valor Causa', 
+        y='Valor da Causa', 
         color_discrete_sequence=[px.colors.qualitative.Vivid[5]],
-        text = 'Valor Causa Formatado',
+        text = 'Valor da Causa Formatado',
         title='Valor de Causa de Processos por Loteamento'
     )
     st.plotly_chart(grafico_vlr_lote, use_container_width=True)
@@ -150,16 +157,16 @@ with aba2:
     )
     st.plotly_chart(grafico_qtd_contagem_empresa, use_container_width=True)
 
-    df_vlr_empresa = df_fortcasa_filtrado.groupby('Nome/Razão Social')['Valor Causa'].sum().reset_index()
-    df_vlr_empresa = df_vlr_empresa.sort_values(by = 'Valor Causa', ascending=False)
-    df_vlr_empresa['Valor Causa Formatado'] = df_vlr_empresa['Valor Causa'].apply(format_number)
+    df_vlr_empresa = df_fortcasa_filtrado.groupby('Nome/Razão Social')['Valor da Causa'].sum().reset_index()
+    df_vlr_empresa = df_vlr_empresa.sort_values(by = 'Valor da Causa', ascending=False)
+    df_vlr_empresa['Valor da Causa Formatado'] = df_vlr_empresa['Valor da Causa'].apply(format_number)
 
     grafico_vlr_empresa = px.bar(
         df_vlr_empresa.head(10), 
         x='Nome/Razão Social', 
-        y='Valor Causa', 
+        y='Valor da Causa', 
         color_discrete_sequence=[px.colors.qualitative.Vivid[5]],
-        text = 'Valor Causa Formatado',
+        text = 'Valor da Causa Formatado',
         title='Valor de Causa de Processos por Empresa'
     )
     st.plotly_chart(grafico_vlr_empresa, use_container_width=True)
