@@ -12,8 +12,8 @@ st.markdown("---")
 st.sidebar.image('logo_gsa.png', width=300)
 
 with st.sidebar:
-    #razao_social = df_fortcasa['Nome/Razão Social'].unique().tolist()
-    #filtro_razao_social = st.multiselect('Razão Social', razao_social)
+    razao_social = df_fortcasa['Nome/Razão Social'].unique().tolist()
+    filtro_razao_social = st.multiselect('Razão Social', razao_social)
 
     empreendimento = df_fortcasa['Empreendimento'].unique().tolist()
     filtro_empreendimento = st.multiselect('Empreendimento', empreendimento)
@@ -29,8 +29,8 @@ with st.sidebar:
 
     df_fortcasa_filtrado = df_fortcasa
 
-    #if filtro_razao_social:
-        #df_fortcasa_filtrado = df_fortcasa_filtrado[df_fortcasa_filtrado['Nome/Razão Social'].isin(filtro_razao_social)]
+    if filtro_razao_social:
+        df_fortcasa_filtrado = df_fortcasa_filtrado[df_fortcasa_filtrado['Nome/Razão Social'].isin(filtro_razao_social)]
 
     if filtro_empreendimento:
         df_fortcasa_filtrado = df_fortcasa_filtrado[df_fortcasa_filtrado['Empreendimento'].isin(filtro_empreendimento)]
@@ -62,23 +62,24 @@ with aba1:
     contagem_polo_passivo  = df_fortcasa_filtrado['Status Processual'].value_counts().get('POLO PASSIVO', 0)
     contagem_polo_ativo = df_fortcasa_filtrado['Status Processual'].value_counts().get('POLO ATIVO', 0)
     qtd_loteamento = len(df_fortcasa_filtrado['Empreendimento'].unique())
-    #qtd_empresas = len(df_fortcasa_filtrado['Nome/Razão Social'].unique())
+    qtd_empresas = len(df_fortcasa_filtrado['Nome/Razão Social'].unique())
 
 
     st.subheader('Métricas dos Processos')
-    coluna1, coluna2 = st.columns(2)
+    coluna1, coluna2, coluna3 = st.columns(3)
     with coluna1:
         st.metric('Total Valor de Causa', format_number(valor_causa, 'R$'))
         st.metric('Total Valor de Cumprimento de Sentença', format_number(valor_cump_sentenca, 'R$'))
         st.metric('Total Valor do Acordo', format_number(valor_acordo, 'R$'))
-        st.metric('Quantidade de Loteamentos', qtd_loteamento)
         
     with coluna2:
         st.metric('Quantidade de Processos', qtd_processos)
         st.metric('Polo Passivo', contagem_polo_passivo )
         st.metric('Polo Ativo', contagem_polo_ativo)
-        #st.metric('Quantidade de Empresas', qtd_empresas)
-        
+    with coluna3:
+        st.metric('Quantidade de Empresas', qtd_empresas)
+        st.metric('Quantidade de Loteamentos', qtd_loteamento)
+
     st.markdown('---')
 
     st.dataframe(df_fortcasa_filtrado)
@@ -143,3 +144,31 @@ with aba2:
         title='Valor de Causa de Processos por Loteamento'
     )
     st.plotly_chart(grafico_vlr_lote, use_container_width=True)
+
+    contagem_empresa = df_fortcasa_filtrado['Nome/Razão Social'].value_counts().reset_index()
+    contagem_empresa.columns = ['Nome/Razão Social', 'Quantidade']
+    contagem_empresa = contagem_empresa.sort_values(by='Quantidade', ascending=False)
+
+    grafico_qtd_contagem_empresa = px.bar(
+        contagem_empresa.head(10), 
+        x='Nome/Razão Social', 
+        y='Quantidade', 
+        color_discrete_sequence=[px.colors.qualitative.Vivid[5]],
+        text = 'Quantidade',
+        title='Contagem de Processos por Empresa'
+    )
+    st.plotly_chart(grafico_qtd_contagem_empresa, use_container_width=True)
+
+    df_vlr_empresa = df_fortcasa_filtrado.groupby('Nome/Razão Social')['Valor da Causa'].sum().reset_index()
+    df_vlr_empresa = df_vlr_empresa.sort_values(by = 'Valor da Causa', ascending=False)
+    df_vlr_empresa['Valor da Causa Formatado'] = df_vlr_empresa['Valor da Causa'].apply(format_number)
+
+    grafico_vlr_empresa = px.bar(
+        df_vlr_empresa.head(10), 
+        x='Nome/Razão Social', 
+        y='Valor da Causa', 
+        color_discrete_sequence=[px.colors.qualitative.Vivid[5]],
+        text = 'Valor da Causa Formatado',
+        title='Valor de Causa de Processos por Empresa'
+    )
+    st.plotly_chart(grafico_vlr_empresa, use_container_width=True)
