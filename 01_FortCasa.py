@@ -50,6 +50,8 @@ with st.sidebar:
 
 aba1, aba2 = st.tabs(['Quadro Geral', 'Análises e Gráficos'])
 
+df_fortcasa_filtrado['Valor de Cumprimento de Sentença'] = pd.to_numeric(df_fortcasa_filtrado['Valor de Cumprimento de Sentença'], errors='coerce')
+
 with aba1:
     qtd_processos = df_fortcasa_filtrado['Número do Processo'].count()
     df_fortcasa_filtrado['Valor da Causa'] = df_fortcasa_filtrado['Valor da Causa'].astype(str).str.replace(',', '.', regex=False).astype(float)
