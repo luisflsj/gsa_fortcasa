@@ -29,8 +29,8 @@ with st.sidebar:
 
     df_fortcasa_filtrado = df_fortcasa
 
-    if filtro_razao_social:
-        df_fortcasa_filtrado = df_fortcasa_filtrado[df_fortcasa_filtrado['Nome/Razão Social'].isin(filtro_razao_social)]
+    #if filtro_razao_social:
+        #df_fortcasa_filtrado = df_fortcasa_filtrado[df_fortcasa_filtrado['Nome/Razão Social'].isin(filtro_razao_social)]
 
     if filtro_empreendimento:
         df_fortcasa_filtrado = df_fortcasa_filtrado[df_fortcasa_filtrado['Empreendimento'].isin(filtro_empreendimento)]
