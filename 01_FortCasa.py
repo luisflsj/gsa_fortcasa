@@ -73,7 +73,7 @@ with aba1:
     coluna1, coluna2, coluna3 = st.columns(3)
     with coluna1:
         st.metric('Total Valor de Causa', format_number(valor_causa, 'R$'))
-        st.metric('Total Valor de Cumprimento de Sentença]', format_number(valor_cump_sentenca, 'R$'))
+        st.metric('Total Valor de Cumprimento de Sentença', format_number(valor_cump_sentenca, 'R$'))
         st.metric('Total Valor do Acordo', format_number(valor_acordo, 'R$'))
         
     with coluna2:
