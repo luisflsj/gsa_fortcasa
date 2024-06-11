@@ -50,15 +50,19 @@ with st.sidebar:
 
 aba1, aba2 = st.tabs(['Quadro Geral', 'Análises e Gráficos'])
 
-df_fortcasa_filtrado['Valor de Cumprimento de Sentença'] = pd.to_numeric(df_fortcasa_filtrado['Valor de Cumprimento de Sentença'], errors='coerce')
-
 with aba1:
     qtd_processos = df_fortcasa_filtrado['Número do Processo'].count()
+    # =========== Transformando em Float =========== #
     df_fortcasa_filtrado['Valor da Causa'] = df_fortcasa_filtrado['Valor da Causa'].astype(str).str.replace(',', '.', regex=False).astype(float)
     df_fortcasa_filtrado['Valor do Acordo'] = df_fortcasa_filtrado['Valor do Acordo'].astype(str).str.replace(',', '.', regex=False).astype(float)
+    df_fortcasa_filtrado['Valor de Cumprimento de Sentença'] = df_fortcasa_filtrado['Valor de Cumprimento de Sentença'].astype(str).str.replace(',', '.', regex=False).astype(float)
+
+    # =========== Somando Valores =========== #
     valor_causa = df_fortcasa_filtrado['Valor da Causa'].sum()
     valor_cump_sentenca = df_fortcasa_filtrado['Valor de Cumprimento de Sentença'].sum()
     valor_acordo = df_fortcasa_filtrado['Valor do Acordo'].sum()
+
+    # =========== Contando Valores =========== #
     contagem_polo_passivo  = df_fortcasa_filtrado['Status Processual'].value_counts().get('POLO PASSIVO', 0)
     contagem_polo_ativo = df_fortcasa_filtrado['Status Processual'].value_counts().get('POLO ATIVO', 0)
     qtd_loteamento = len(df_fortcasa_filtrado['Empreendimento'].unique())
@@ -69,7 +73,7 @@ with aba1:
     coluna1, coluna2, coluna3 = st.columns(3)
     with coluna1:
         st.metric('Total Valor de Causa', format_number(valor_causa, 'R$'))
-        st.metric('Total Valor de Cumprimento de Sentença', format_number(valor_cump_sentenca, 'R$'))
+        st.metric('Total Valor de Cumprimento de Sentença]', format_number(valor_cump_sentenca, 'R$'))
         st.metric('Total Valor do Acordo', format_number(valor_acordo, 'R$'))
         
     with coluna2:
